@@ -22,6 +22,9 @@ export interface IDocument {
 class Document implements IDocument {
   size!: IntVector2;
   text: string = "";
+  constructor(size: IntVector2) {
+    this.size = size;
+  }
   get text2D(): string[] {
     let t = [];
     for (let i = 0; i < this.size.y; i += this.size.x) {
