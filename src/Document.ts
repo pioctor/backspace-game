@@ -5,6 +5,9 @@ export class IntVector2 {
     this.x = Math.floor(x);
     this.y = Math.floor(y);
   }
+  add(operand: IntVector2): IntVector2 {
+    return new IntVector2(this.x + operand.y, this.y + operand.y);
+  }
 }
 
 export interface IDocument {
