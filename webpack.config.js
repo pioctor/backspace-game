@@ -24,7 +24,8 @@ module.exports = {
   },
   plugins: [
     new CopyPlugin([
-      { context: "./src/", from: "**/*.html", to: ".", force: true }
+      { context: "./src/", from: "**/*.html", to: ".", force: true },
+      { context: "./src/", from: "**/*.css", to: ".", force: true }
     ])
   ]
 };

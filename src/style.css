@@ -1,0 +1,23 @@
+.cursor {
+  stroke: coral;
+  stroke-width: 0.05;
+  animation: winker 1s linear 0s infinite normal none;
+}
+
+@keyframes winker {
+  0% {
+    stroke: coral;
+  }
+
+  70% {
+    stroke: none;
+  }
+
+  100% {
+    stroke: coral;
+  }
+}
+
+.character {
+  stroke: green;
+}
