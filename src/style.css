@@ -21,3 +21,7 @@
 .character {
   stroke: green;
 }
+
+body {
+  text-align: center;
+}

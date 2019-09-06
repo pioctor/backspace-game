@@ -13,11 +13,12 @@ export default class Game {
     this.editorSvg.setAttribute("width", `${this.editor.document.size.x * 30}`);
     this.editorSvg.setAttribute(
       "height",
-      `${this.editor.document.size.y * 70}`
+      `${this.editor.document.size.y * 30 * 1.5}`
     );
     this.editorSvg.setAttribute(
       "viewBox",
-      `0 0 ${this.editor.document.size.x * 1.3} ${this.editor.document.size.y}`
+      `-0.2 0 ${this.editor.document.size.x + 0.3} ${this.editor.document.size
+        .y * 1.5}`
     );
 
     this.editor.document.observableText.subscribe(_ => this.updateChars());
@@ -35,9 +36,7 @@ export default class Game {
   backs: string = "";
 
   render() {
-    let html = [
-      `<g transform="translate(${this.editor.document.size.x * 0.2},0)">`
-    ];
+    let html = [`<g>`];
     html.push(
       `<rect x="-0.05" width="${this.editor.document.size.x +
         0.05}" height="${this.editor.document.size.y *
