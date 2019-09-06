@@ -20,9 +20,10 @@ export default class Game {
       `0 0 ${this.editor.document.size.x * 1.3} ${this.editor.document.size.y}`
     );
 
-    this.document.text = this.editor.randomText(this.document.size.x * 10);
+    this.editor.document.observableText.subscribe(_ => this.updateChars());
+    this.editor.cursor.observablePosition.subscribe(_ => this.updateCursor());
 
-    this.updateChars();
+    this.document.text = this.editor.randomText(this.document.size.x * 10);
     this.updateCursor();
     this.render();
   }
@@ -62,36 +63,30 @@ export default class Game {
       c.forceSet(c.position + 1);
     }
     this.chars = html.join("");
+    this.render();
   }
 
   updateCursor() {
     this.cursor = `<path class="cursor" stroke="#000" d="m${this.editor.cursor
       .position2D.x + 0.9},${this.editor.cursor.position2D.y *
       1.5}v1.5"></path>`;
+    this.render();
   }
 
   up() {
     this.editor.up();
-    this.updateCursor();
-    this.render();
   }
 
   down() {
     this.editor.down();
-    this.updateCursor();
-    this.render();
   }
 
   left() {
     this.editor.left();
-    this.updateCursor();
-    this.render();
   }
 
   right() {
     this.editor.right();
-    this.updateCursor();
-    this.render();
   }
 
   busy = false;
@@ -101,7 +96,6 @@ export default class Game {
       return;
     }
     this.editor.backspace();
-    this.updateChars();
     console.log(this.editor.document.text.length);
     this.next();
   }
@@ -111,7 +105,6 @@ export default class Game {
       return;
     }
     this.editor.delete();
-    this.updateChars();
     console.log(this.editor.document.text.length);
     this.next();
   }
@@ -131,6 +124,7 @@ export default class Game {
     );
     html.push(`</g>`);
     this.backs = html.join("");
+    this.render();
   }
 
   next(count: number = 0) {
@@ -150,7 +144,6 @@ export default class Game {
     setTimeout(() => {
       this.editor.replaceBacks(posDirs);
       this.editor.removeSpaces();
-      this.updateChars();
       this.next(count + 1);
     }, 1000);
   }
