@@ -1,31 +1,67 @@
-interface IDisposable {
+import { isFunction } from "util";
+
+export interface IDisposable {
   dispose(): void;
 }
-export class ObservableProperty<T> {
-  private _value: T;
-  private observes: ((value: T) => void)[] = [];
-  set value(value: T) {
-    this._value = value;
-    this.observes.forEach(value => value(this.value));
-  }
-  get value() {
-    return this._value;
-  }
-  constructor(value: T) {
-    this._value = value;
-  }
+export interface IObservable<T> {
+  subscribe(observe: (value: T) => void): IDisposable;
+  observe(observer: IObserver<T>): IDisposable;
+}
+
+export interface IObserver<T> {
+  onNext(value: T): void;
+}
+export class Subject<T> implements IObservable<T>, IObserver<T> {
+  private observers: IObserver<T>[] = [];
   subscribe(observe: (value: T) => void): IDisposable {
-    this.observes.push(observe);
+    return this.observe({ onNext: value => observe(value) });
+  }
+  observe(observer: IObserver<T>) {
+    this.observers.push(observer);
     let dispose = {
       disposed: false,
-      observes: this.observes,
+      observers: this.observers,
       dispose() {
         if (!this.disposed) {
-          this.observes.indexOf(observe);
+          this.observers.indexOf(observer);
           this.disposed = true;
         }
       }
     };
     return dispose;
   }
+  onNext(value: T): void {
+    this.observers.forEach(observer => {
+      observer.onNext(value);
+    });
+  }
+}
+
+export class ObservableProperty<T> implements IObservable<T> {
+  private _value!: T;
+  private _subject = new Subject<T>();
+  set value(value: T) {
+    this._value = value;
+    this._subject.onNext(value);
+  }
+  get value() {
+    return this._value;
+  }
+  constructor(value?: T) {
+    if (value != undefined) {
+      this._value = value;
+    }
+  }
+  subscribe(observe: (value: T) => void): IDisposable {
+    return this._subject.subscribe(observe);
+  }
+  observe(observer: IObserver<T>): IDisposable {
+    return this._subject.observe(observer);
+  }
+}
+
+export interface IReadOnlyObservableProperty<T> {
+  readonly value: T;
+  subscribe(observe: (value: T) => void): IDisposable;
+  observe(observer: IObserver<T>): IDisposable;
 }
