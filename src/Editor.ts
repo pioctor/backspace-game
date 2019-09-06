@@ -1,9 +1,13 @@
 import { IDocument, IntVector2 } from "./Document";
 import { randomBytes } from "crypto";
+import { ObservableProperty } from "./Observable";
 
 export class Cursor {
   document: IDocument;
-  private _position = 0;
+  observablePosition = new ObservableProperty(0);
+  private set _position(value: number) {
+    this.observablePosition.value = value;
+  }
   constructor(document: IDocument) {
     this.document = document;
     this._position = 0;
@@ -18,7 +22,7 @@ export class Cursor {
     this._position = position;
   }
   get position() {
-    return this._position;
+    return this.observablePosition.value;
   }
   set character(character: string) {
     this.document.text =

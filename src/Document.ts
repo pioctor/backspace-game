@@ -1,3 +1,4 @@
+import { ObservableProperty } from "./Observable";
 export class IntVector2 {
   x: number;
   y: number;
@@ -13,6 +14,7 @@ export class IntVector2 {
 export interface IDocument {
   size: IntVector2;
   text: string;
+  observableText: ObservableProperty<string>;
   text2D: string[];
   isOutOfDocument(position: number): boolean;
   isOutOfDocument2D(position2D: IntVector2): boolean;
@@ -22,7 +24,13 @@ export interface IDocument {
 
 export class Document implements IDocument {
   size: IntVector2;
-  text: string = "";
+  observableText = new ObservableProperty("");
+  set text(text: string) {
+    this.observableText.value = text;
+  }
+  get text() {
+    return this.observableText.value;
+  }
   constructor(size: IntVector2) {
     this.size = size;
   }
