@@ -132,7 +132,7 @@ export default class Editor {
     this.document.text += text;
 
     setTimeout(() => {
-      this.replaceBacks(this.backs.value);
+      this.replaceBacks();
       this.removeSpaces();
       this.next(count + 1);
     }, 1000);
@@ -182,7 +182,10 @@ export default class Editor {
 
     return pos_dirs;
   }
-  replaceBacks(pos_dirs: PosDir[]) {
+  replaceBacks(pos_dirs?: PosDir[]) {
+    if (pos_dirs == undefined) {
+      pos_dirs = this.backs.value;
+    }
     let c = new Cursor(this.document);
     pos_dirs.forEach(value => {
       c.position = value.position;
