@@ -93,6 +93,7 @@ export default class Editor {
     this.document = document;
     this.cursor = new Cursor(this.document);
   }
+  score = new ObservableProperty(0);
 
   up() {
     this.cursor.move(new IntVector2(0, -1));
@@ -128,6 +129,7 @@ export default class Editor {
       this.busy.value = false;
       return;
     }
+    this.score.value += this.backs.value.length * (count + 10);
     let text = this.randomText(6 * this.backs.value.length);
     this.document.text += text;
 
