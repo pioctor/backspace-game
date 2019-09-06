@@ -1,6 +1,11 @@
 import { IDocument, IntVector2 } from "./Document";
 import { randomBytes } from "crypto";
-import { ObservableProperty } from "./Observable";
+import {
+  ObservableProperty,
+  IObservable,
+  Subject,
+  IReadOnlyObservableProperty
+} from "./Observable";
 
 export class Cursor {
   document: IDocument;
@@ -93,7 +98,15 @@ export default class Editor {
     this.document = document;
     this.cursor = new Cursor(this.document);
   }
-  score = new ObservableProperty(0);
+  private _score = new ObservableProperty(0);
+  score = this._score as IReadOnlyObservableProperty<number>;
+  private _addScoreSubject = new Subject<number>();
+  addScoreAsObservable: IObservable<number> = this._addScoreSubject;
+
+  addScore(value: number) {
+    this._score.value += value;
+    this._addScoreSubject.onNext(value);
+  }
 
   up() {
     this.cursor.move(new IntVector2(0, -1));
@@ -129,7 +142,7 @@ export default class Editor {
       this.busy.value = false;
       return;
     }
-    this.score.value += this.backs.value.length * (count + 10);
+    this.addScore(this.backs.value.length * (count + 10));
     let text = this.randomText(6 * this.backs.value.length);
     this.document.text += text;
 
