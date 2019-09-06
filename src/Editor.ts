@@ -76,6 +76,15 @@ let IntRandom = (n: number): number => {
   return Math.floor(Math.random() * n);
 };
 
+export class PosDir {
+  position: number;
+  direction: IntVector2;
+  constructor(position: number, direction: IntVector2) {
+    this.position = position;
+    this.direction = direction;
+  }
+}
+
 export default class Editor {
   document: IDocument;
   cursor: Cursor;
