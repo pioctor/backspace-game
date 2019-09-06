@@ -23,9 +23,11 @@ export default class Game {
     this.editor.document.observableText.subscribe(_ => this.updateChars());
     this.editor.cursor.observablePosition.subscribe(_ => this.updateCursor());
     this.editor.backs.subscribe(backs => this.updateBacks());
+    this.editor.score.subscribe(_ => this.updateScore());
 
     this.document.text = this.editor.randomText(this.document.size.x * 10);
     this.updateCursor();
+    this.updateScore();
     this.render();
   }
   chars: string = "";
@@ -72,6 +74,13 @@ export default class Game {
       .position2D.x + 0.9},${this.editor.cursor.position2D.y *
       1.5}v1.5"></path>`;
     this.render();
+  }
+
+  updateScore() {
+    let score = document.getElementById("score");
+    if (score != null) {
+      score.innerText = this.editor.score.value.toString();
+    }
   }
 
   up() {
