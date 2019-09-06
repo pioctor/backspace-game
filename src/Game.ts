@@ -22,6 +22,7 @@ export default class Game {
 
     this.editor.document.observableText.subscribe(_ => this.updateChars());
     this.editor.cursor.observablePosition.subscribe(_ => this.updateCursor());
+    this.editor.backs.subscribe(backs => this.updateBacks());
 
     this.document.text = this.editor.randomText(this.document.size.x * 10);
     this.updateCursor();
@@ -89,27 +90,16 @@ export default class Game {
     this.editor.right();
   }
 
-  busy = false;
-
   backspace() {
-    if (this.busy) {
-      return;
-    }
     this.editor.backspace();
-    console.log(this.editor.document.text.length);
-    this.next();
   }
 
   delete() {
-    if (this.busy) {
-      return;
-    }
     this.editor.delete();
-    console.log(this.editor.document.text.length);
-    this.next();
   }
 
-  updateBacks(posDirs: { position: number; direction: IntVector2 }[]) {
+  updateBacks() {
+    let posDirs = this.editor.backs.value;
     let html = [
       `<g transform="scale(1,1.5)" stroke="#000" stroke-width="0.1">`
     ];
@@ -125,26 +115,5 @@ export default class Game {
     html.push(`</g>`);
     this.backs = html.join("");
     this.render();
-  }
-
-  next(count: number = 0) {
-    this.busy = true;
-    let posDirs = this.editor.findAllBacks();
-    if (posDirs.length <= 0) {
-      this.backs = "";
-      this.render();
-      this.busy = false;
-      return;
-    }
-    this.updateBacks(posDirs);
-    this.render();
-    let text = this.editor.randomText(6 * posDirs.length);
-    this.editor.document.text += text;
-
-    setTimeout(() => {
-      this.editor.replaceBacks(posDirs);
-      this.editor.removeSpaces();
-      this.next(count + 1);
-    }, 1000);
   }
 }

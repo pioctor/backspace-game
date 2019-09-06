@@ -107,12 +107,35 @@ export default class Editor {
     this.cursor.position++;
   }
   backspace() {
+    if (this.busy.value) return;
     this.cursor.backspace();
-    //this.document.text += this.characters[IntRandom(this.characters.length)];
+    this.next();
   }
 
   delete() {
+    if (this.busy.value) return;
     this.cursor.delete();
+    this.next();
+  }
+  busy = new ObservableProperty<boolean>(false);
+  backs = new ObservableProperty<PosDir[]>([]);
+
+  next(count: number = 0) {
+    this.busy.value = true;
+    this.backs.value = this.findAllBacks();
+    if (this.backs.value.length <= 0) {
+      this.backs.value = [];
+      this.busy.value = false;
+      return;
+    }
+    let text = this.randomText(6 * this.backs.value.length);
+    this.document.text += text;
+
+    setTimeout(() => {
+      this.replaceBacks(this.backs.value);
+      this.removeSpaces();
+      this.next(count + 1);
+    }, 1000);
   }
 
   findBacks(direction: IntVector2): number[] {
