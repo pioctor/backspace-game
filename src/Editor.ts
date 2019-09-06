@@ -144,14 +144,14 @@ export default class Editor {
     }
     return result;
   }
-  findAllBacks(): { position: number; direction: IntVector2 }[] {
-    let pos_dirs: { position: number; direction: IntVector2 }[] = [];
+  findAllBacks(): PosDir[] {
+    let pos_dirs: PosDir[] = [];
     for (let i = -1; i <= 1; i++) {
       for (let j = -1; j <= 1; j++) {
         let direction = new IntVector2(i, j);
         this.findBacks(direction)
           .map(position => {
-            return { position: position, direction: direction };
+            return new PosDir(position, direction);
           })
           .forEach(pos_dir => pos_dirs.push(pos_dir));
       }
@@ -159,7 +159,7 @@ export default class Editor {
 
     return pos_dirs;
   }
-  replaceBacks(pos_dirs: { position: number; direction: IntVector2 }[]) {
+  replaceBacks(pos_dirs: PosDir[]) {
     let c = new Cursor(this.document);
     pos_dirs.forEach(value => {
       c.position = value.position;
