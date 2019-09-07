@@ -23,7 +23,8 @@ export class Subject<T> implements IObservable<T>, IObserver<T> {
       observers: this.observers,
       dispose() {
         if (!this.disposed) {
-          this.observers.indexOf(observer);
+          let i = this.observers.indexOf(observer);
+          this.observers.splice(i, 1);
           this.disposed = true;
         }
       }
