@@ -17,9 +17,31 @@
     stroke: coral;
   }
 }
+.rect {
+  fill: #eff;
+  stroke: #000;
+  stroke-width: 0.05;
+}
 
 .character {
   stroke: green;
+  stroke-width: 20;
+  fill: none;
+}
+
+.A {
+  stroke: blue;
+}
+.B {
+  stroke: black;
+}
+.C {
+  stroke: red;
+}
+
+.back-line {
+  stroke: black;
+  stroke-width: 0.1;
 }
 
 body {

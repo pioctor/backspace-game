@@ -72,9 +72,8 @@ export default class Game {
   render() {
     let html = [`<g>`];
     html.push(
-      `<rect x="-0.05" width="${this.editor.document.size.x +
-        0.05}" height="${this.editor.document.size.y *
-        1.5}" fill="none" stroke="#000" stroke-width="0.05"></rect>`
+      `<rect class="rect" x="-0.05" width="${this.editor.document.size.x +
+        0.05}" height="${this.editor.document.size.y * 1.5}"></rect>`
     );
 
     html.push(this.chars);
@@ -86,6 +85,7 @@ export default class Game {
 
   updateChars() {
     let html = [];
+    html.push("<g class=character>");
     let c = new Cursor(this.document);
     c.position = 0;
     while (!c.isOut) {
@@ -98,14 +98,14 @@ export default class Game {
       }
       c.forceSet(c.position + 1);
     }
+    html.push("</g>");
     this.chars = html.join("");
     this.render();
   }
 
   updateCursor() {
-    this.cursor = `<path class="cursor" stroke="#000" d="m${this.editor.cursor
-      .position2D.x + 0.9},${this.editor.cursor.position2D.y *
-      1.5}v1.5"></path>`;
+    this.cursor = `<path class="cursor" d="m${this.editor.cursor.position2D.x +
+      0.9},${this.editor.cursor.position2D.y * 1.5}v1.5"></path>`;
     this.render();
   }
 
@@ -142,9 +142,7 @@ export default class Game {
 
   updateBacks() {
     let posDirs = this.editor.backs.value;
-    let html = [
-      `<g transform="scale(1,1.5)" stroke="#000" stroke-width="0.1">`
-    ];
+    let html = [`<g class="back-line" transform="scale(1,1.5)">`];
     posDirs.forEach(posDir =>
       html.push(
         `<path d="m${this.document.getPosition2D(posDir.position).x +
