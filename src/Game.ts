@@ -7,6 +7,7 @@ export default class Game {
   editorSvg: SVGSVGElement;
   document: Document.IDocument = new Document.Document(new IntVector2(6, 10));
   editor = new Editor(this.document);
+  volume: number = 0.1;
   constructor(editorSvg: SVGSVGElement) {
     this.editorSvg = editorSvg;
     this.editor.characters = Object.keys(characters);
@@ -30,10 +31,43 @@ export default class Game {
     this.updateCursor();
     this.updateScore();
     this.render();
+
+    this.initializeSound();
   }
   chars: string = "";
   cursor: string = "";
   backs: string = "";
+
+  initializeSound() {
+    let audioContext = new AudioContext();
+    let playing: OscillatorNode;
+    let play = (
+      length = 1,
+      gain = 1,
+      frequency = 440,
+      type: OscillatorType = "sine"
+    ) => {
+      let t = audioContext.currentTime;
+      let osc = new OscillatorNode(audioContext);
+      let gainNode = new GainNode(audioContext);
+      gainNode.gain.value = gain * this.volume;
+      osc.frequency.value = frequency;
+      osc.type = type;
+      osc.connect(gainNode).connect(audioContext.destination);
+      osc.start(t);
+      osc.stop(t + length);
+      playing = osc;
+    };
+    this.editor.cursorMoveAsObservable.subscribe(_ => {
+      play(0.05, 0.5, 440, "triangle");
+    });
+    this.editor.deleteAndBackspaceAsObservable.subscribe(_ => {
+      play(0.05, 1, 770, "square");
+    });
+    this.editor.backAsObservable.subscribe(value => {
+      play(0.3, 1, 440 * Math.pow(1.06, value.combo), "sine");
+    });
+  }
 
   render() {
     let html = [`<g>`];
