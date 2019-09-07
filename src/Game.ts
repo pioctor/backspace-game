@@ -5,10 +5,10 @@ import { characters, space } from "./characters";
 
 export default class Game {
   editorSvg: SVGSVGElement;
-  document: Document.IDocument = new Document.Document(new IntVector2(6, 10));
-  editor = new Editor(this.document);
+  editor: Editor;
   volume: number = 0.1;
-  constructor(editorSvg: SVGSVGElement) {
+  constructor(editorSvg: SVGSVGElement, editor: Editor) {
+    this.editor = editor;
     this.editorSvg = editorSvg;
     this.editor.characters = Object.keys(characters);
     this.editorSvg.setAttribute("width", `${this.editor.document.size.x * 30}`);
@@ -27,7 +27,9 @@ export default class Game {
     this.editor.backs.subscribe(backs => this.updateBacks());
     this.editor.score.subscribe(_ => this.updateScore());
 
-    this.document.text = this.editor.randomText(this.document.size.x * 10);
+    this.editor.document.text = this.editor.randomText(
+      this.editor.document.size.x * 10
+    );
     this.updateCursor();
     this.updateScore();
     this.render();
@@ -62,7 +64,7 @@ export default class Game {
       play(0.05, 0.5, 440, "triangle");
     });
     this.editor.deleteAndBackspaceAsObservable.subscribe(_ => {
-      play(0.05, 1, 770, "square");
+      play(0.05, 0.1, 770, "square");
     });
     this.editor.backAsObservable.subscribe(value => {
       play(0.3, 1, 440 * Math.pow(1.06, value.combo), "sine");
@@ -86,7 +88,7 @@ export default class Game {
   updateChars() {
     let html = [];
     html.push("<g class=character>");
-    let c = new Cursor(this.document);
+    let c = new Cursor(this.editor.document);
     c.position = 0;
     while (!c.isOut) {
       try {
@@ -145,9 +147,9 @@ export default class Game {
     let html = [`<g class="back-line" transform="scale(1,1.5)">`];
     posDirs.forEach(posDir =>
       html.push(
-        `<path d="m${this.document.getPosition2D(posDir.position).x +
-          0.5},${this.document.getPosition2D(posDir.position).y + 0.5}l${posDir
-          .direction.x *
+        `<path d="m${this.editor.document.getPosition2D(posDir.position).x +
+          0.5},${this.editor.document.getPosition2D(posDir.position).y +
+          0.5}l${posDir.direction.x *
           (this.editor.characters.length - 1)},${posDir.direction.y *
           (this.editor.characters.length - 1)}"></path>`
       )
