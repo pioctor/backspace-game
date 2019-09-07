@@ -108,33 +108,50 @@ export default class Editor {
     this._addScoreSubject.onNext(value);
   }
 
+  private _cursorMoveSubject = new Subject<number>();
+  cursorMoveAsObservable: IObservable<number> = this._cursorMoveSubject;
+
+  private _deleteAndBackspaceSubject = new Subject<void>();
+  deleteAndBackspaceAsObservable: IObservable<void> = this
+    ._deleteAndBackspaceSubject;
+
+  private _backSubject = new Subject<{ count: number; combo: number }>();
+  backAsObservable: IObservable<{ count: number; combo: number }> = this
+    ._backSubject;
+
   up() {
     this.cursor.move(new IntVector2(0, -1));
+    this._cursorMoveSubject.onNext(this.cursor.position);
   }
   down() {
     this.cursor.move(new IntVector2(0, 1));
+    this._cursorMoveSubject.onNext(this.cursor.position);
   }
   left() {
     this.cursor.position--;
+    this._cursorMoveSubject.onNext(this.cursor.position);
   }
   right() {
     this.cursor.position++;
+    this._cursorMoveSubject.onNext(this.cursor.position);
   }
   backspace() {
     if (this.busy.value) return;
     this.cursor.backspace();
+    this._deleteAndBackspaceSubject.onNext();
     this.next();
   }
 
   delete() {
     if (this.busy.value) return;
     this.cursor.delete();
+    this._deleteAndBackspaceSubject.onNext();
     this.next();
   }
   busy = new ObservableProperty<boolean>(false);
   backs = new ObservableProperty<PosDir[]>([]);
 
-  next(count: number = 0) {
+  next(combo: number = 0) {
     this.busy.value = true;
     this.backs.value = this.findAllBacks();
     if (this.backs.value.length <= 0) {
@@ -142,15 +159,16 @@ export default class Editor {
       this.busy.value = false;
       return;
     }
-    this.addScore(this.backs.value.length * (count + 10));
+    this.addScore(this.backs.value.length * (combo + 10));
+    this._backSubject.onNext({ count: this.backs.value.length, combo: combo });
     let text = this.randomText(6 * this.backs.value.length);
     this.document.text += text;
 
     setTimeout(() => {
       this.replaceBacks();
       this.removeSpaces();
-      this.next(count + 1);
-    }, 1000);
+      this.next(combo + 1);
+    }, 300);
   }
 
   findBacks(direction: IntVector2): number[] {
