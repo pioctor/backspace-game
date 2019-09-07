@@ -14,7 +14,6 @@ if (isSvgSvg(svg)) {
     switch (event.keyCode) {
       case 38: //up
         game.up();
-        console.log("up");
         break;
       case 40: //down
         game.down();
