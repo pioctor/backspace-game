@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <title>Document</title>
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="game">
     <div>
       <h1>
         score:
@@ -17,6 +20,22 @@
     <div>
       <svg id="svg"></svg>
     </div>
+    <div>
+      volume<br><input type="range"></input>
+    </div>
+  </div>
+  <div id="result">
+    <svg id="result-svg">
+      <rect id="result-rect"></rect>
+    </svg>
+    <div id="result-text">
+      <div>Game Over</div>
+      <div class="button">
+        <button>Replay</button><br>
+        <button>Back To Menu</button>
+      </div>
+    </div>
     <script src="bundle.js"></script>
-  </body>
+</body>
+
 </html>
