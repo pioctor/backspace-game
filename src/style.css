@@ -44,32 +44,36 @@
   stroke-width: 0.1;
 }
 
-#result {
+.result {
   position: absolute;
   top: 10%;
   bottom: 10%;
   left: 0%;
   right: 0%;
+}
+
+#result {
   visibility: hidden;
 }
 
-#result-svg {
+.result-svg {
   height: 100%;
   width: 100%;
 }
 
-#result-rect {
+.result-rect {
   width: 1000cm;
   height: 100%;
 
   fill: wheat;
-  fill-opacity: 0.8;
+  fill-opacity: 0.95;
 }
 
-#result-text {
+.result-text {
   position: absolute;
   font-family: sans-serif;
   text-anchor: middle;
+  font-weight: bold;
   font-size: 10vmin;
   top: 20%;
   left: 0%;

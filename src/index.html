@@ -24,18 +24,30 @@
       volume<br><input type="range"></input>
     </div>
   </div>
-  <div id="result">
-    <svg id="result-svg">
-      <rect id="result-rect"></rect>
+  <div class="result" id="result">
+    <svg class="result-svg">
+      <rect class="result-rect"></rect>
     </svg>
-    <div id="result-text">
+    <div class="result-text">
       <div>Game Over</div>
-      <div class="button">
-        <button>Replay</button><br>
-        <button>Back To Menu</button>
+      <div>
+        <button id="replay-button">Replay</button><br>
+        <button id="menu-button">Back To Menu</button>
       </div>
     </div>
-    <script src="bundle.js"></script>
+  </div>
+  <div class="result" id="menu">
+    <svg class="result-svg">
+      <rect class="result-rect"></rect>
+    </svg>
+    <div class="result-text">
+      Menu<br>
+      <button id="play-button">Play</button><br>
+      <button id="endless-button">Endless Mode</button><br>
+      <!-- <button id="custom-button">Custom Mode</!-->
+    </div>
+  </div>
+  <script src="bundle.js"></script>
 </body>
 
 </html>
