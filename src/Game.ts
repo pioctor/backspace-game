@@ -28,14 +28,66 @@ export default class Game {
     this.editor.score.subscribe(_ => this.updateScore());
 
     this.editor.document.text = this.editor.randomText(
-      this.editor.document.size.x * 10
+      this.editor.document.size.x * this.editor.document.size.y
     );
     this.updateCursor();
     this.updateScore();
     this.render();
 
     this.initializeSound();
+
+    this.addEventListeners();
+
+    this.editor.gameOverAsObservable.subscribe(() => {
+      this.removeEventListeners();
+    });
   }
+
+  addEventListeners() {
+    addEventListener("keydown", this.onKeyDown);
+    document
+      .getElementById("volume")!
+      .addEventListener("input", this.onVolumeChanged);
+  }
+
+  removeEventListeners = () => {
+    removeEventListener("keydown", this.onKeyDown);
+  };
+
+  onVolumeChanged = (event: Event) => {
+    let target = event.currentTarget;
+    if (target instanceof HTMLInputElement) {
+      if (Number(target.value) < -99) {
+        this.volume = 0;
+      }
+      this.volume = 0.1 * Math.pow(1.03, Number(target.value));
+      console.log(target.value);
+      console.log("volume:" + this.volume);
+    }
+  };
+
+  onKeyDown = (event: KeyboardEvent) => {
+    switch (event.keyCode) {
+      case 38: //up
+        this.editor.up();
+        break;
+      case 40: //down
+        this.editor.down();
+        break;
+      case 37: //left
+        this.editor.left();
+        break;
+      case 39: //right
+        this.editor.right();
+        break;
+      case 8: //backspace
+        this.editor.backspace();
+        break;
+      case 46:
+        this.editor.delete();
+    }
+  };
+
   chars: string = "";
   cursor: string = "";
   backs: string = "";
@@ -116,30 +168,6 @@ export default class Game {
     if (score != null) {
       score.innerText = this.editor.score.value.toString();
     }
-  }
-
-  up() {
-    this.editor.up();
-  }
-
-  down() {
-    this.editor.down();
-  }
-
-  left() {
-    this.editor.left();
-  }
-
-  right() {
-    this.editor.right();
-  }
-
-  backspace() {
-    this.editor.backspace();
-  }
-
-  delete() {
-    this.editor.delete();
   }
 
   updateBacks() {

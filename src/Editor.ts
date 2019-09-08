@@ -119,6 +119,9 @@ export default class Editor {
   backAsObservable: IObservable<{ count: number; combo: number }> = this
     ._backSubject;
 
+  private _gameOverSubject = new Subject<void>();
+  gameOverAsObservable: IObservable<void> = this._gameOverSubject;
+
   up() {
     this.cursor.move(new IntVector2(0, -1));
     this._cursorMoveSubject.onNext(this.cursor.position);
@@ -139,6 +142,7 @@ export default class Editor {
     if (this.busy.value) return;
     this.cursor.backspace();
     this._deleteAndBackspaceSubject.onNext();
+    this.document.text += this.randomCharacter();
     this.next();
   }
 
@@ -146,6 +150,7 @@ export default class Editor {
     if (this.busy.value) return;
     this.cursor.delete();
     this._deleteAndBackspaceSubject.onNext();
+    this.document.text += this.randomCharacter();
     this.next();
   }
   busy = new ObservableProperty<boolean>(false);
@@ -161,7 +166,7 @@ export default class Editor {
     }
     this.addScore(this.backs.value.length * (combo + 10));
     this._backSubject.onNext({ count: this.backs.value.length, combo: combo });
-    let text = this.randomText(6 * this.backs.value.length);
+    let text = this.randomText(4 * this.backs.value.length);
     this.document.text += text;
 
     setTimeout(() => {
