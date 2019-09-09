@@ -75,6 +75,11 @@ class GameOver {
         this._gameOverSubject.onNext();
       }
     });
+    this.left.subscribe(v => {
+      if (v < 0) {
+        this._gameOverSubject.onNext();
+      }
+    });
     this.editor.busy.subscribe(v => {
       if (v) {
         this.timer.stop();
