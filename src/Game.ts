@@ -58,6 +58,9 @@ export default class Game {
 
   removeEventListeners = () => {
     removeEventListener("keydown", this.onKeyDown);
+    document
+      .getElementById("volume")!
+      .addEventListener("input", this.onVolumeChanged);
   };
 
   onVolumeChanged = (event: Event) => {
@@ -73,18 +76,23 @@ export default class Game {
   onKeyDown = (event: KeyboardEvent) => {
     switch (event.keyCode) {
       case 38: //up
+        event.preventDefault();
         this.editor.up();
         break;
       case 40: //down
+        event.preventDefault();
         this.editor.down();
         break;
       case 37: //left
+        event.preventDefault();
         this.editor.left();
         break;
       case 39: //right
+        event.preventDefault();
         this.editor.right();
         break;
       case 8: //backspace
+        event.preventDefault();
         this.editor.backspace();
         break;
       case 46:
