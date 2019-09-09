@@ -3,11 +3,11 @@ import * as Document from "./Document";
 import { IntVector2 } from "./Document";
 import { characters, space } from "./Characters";
 import Result from "./Result";
+import { volume } from "./app";
 
 export default class Game {
   editorSvg: SVGSVGElement;
   editor: Editor;
-  volume: number = 0.1;
   charG: SVGGElement;
   cursorG: SVGGElement;
   backsG: SVGGElement;
@@ -64,26 +64,10 @@ export default class Game {
 
   addEventListeners() {
     addEventListener("keydown", this.onKeyDown);
-    document
-      .getElementById("volume")!
-      .addEventListener("input", this.onVolumeChanged);
   }
 
   removeEventListeners = () => {
     removeEventListener("keydown", this.onKeyDown);
-    document
-      .getElementById("volume")!
-      .addEventListener("input", this.onVolumeChanged);
-  };
-
-  onVolumeChanged = (event: Event) => {
-    let target = event.currentTarget;
-    if (target instanceof HTMLInputElement) {
-      if (Number(target.value) < -99) {
-        this.volume = 0;
-      }
-      this.volume = 0.1 * Math.pow(1.03, Number(target.value));
-    }
   };
 
   onKeyDown = (event: KeyboardEvent) => {
@@ -125,7 +109,7 @@ export default class Game {
       let t = audioContext.currentTime;
       let osc = new OscillatorNode(audioContext);
       let gainNode = new GainNode(audioContext);
-      gainNode.gain.value = gain * this.volume;
+      gainNode.gain.value = gain * volume.volume;
       osc.frequency.value = frequency;
       osc.type = type;
       osc.connect(gainNode).connect(audioContext.destination);
