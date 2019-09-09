@@ -1,6 +1,7 @@
 import { IDocument, Document, IntVector2 } from "./Document";
 import Editor from "./Editor";
 import Game from "./Game";
+import { GameWithGameOver } from "./GameOver";
 
 export default class Menu {
   menu!: HTMLElement;
@@ -21,18 +22,21 @@ export default class Menu {
   createGame = (editor: Editor) => {
     let svg = document.getElementById("svg");
     if (svg instanceof SVGSVGElement) {
-      let game = new Game(svg, editor);
+      return new Game(svg, editor);
     }
   };
   play = () => {
     this.closeMenu();
-    let dcm: IDocument = new Document(new IntVector2(12, 12));
+    let dcm: IDocument = new Document(new IntVector2(16, 12));
     let editor = new Editor(dcm);
-    this.createGame(editor);
+    let game = this.createGame(editor);
+    if (game instanceof Game) {
+      new GameWithGameOver(game);
+    }
   };
   endless = () => {
     this.closeMenu();
-    let dcm: IDocument = new Document(new IntVector2(12, 12));
+    let dcm: IDocument = new Document(new IntVector2(16, 12));
     let editor = new Editor(dcm);
     this.createGame(editor);
   };

@@ -1,7 +1,8 @@
 import Editor, { Cursor } from "./Editor";
 import * as Document from "./Document";
 import { IntVector2 } from "./Document";
-import { characters, space } from "./characters";
+import { characters, space } from "./Characters";
+import Result from "./Result";
 
 export default class Game {
   editorSvg: SVGSVGElement;
@@ -39,8 +40,13 @@ export default class Game {
     this.addEventListeners();
 
     this.editor.gameOverAsObservable.subscribe(() => {
-      this.removeEventListeners();
+      this.onGameOver();
     });
+  }
+
+  onGameOver() {
+    this.removeEventListeners();
+    new Result(this.editor.score.value);
   }
 
   addEventListeners() {
@@ -61,8 +67,6 @@ export default class Game {
         this.volume = 0;
       }
       this.volume = 0.1 * Math.pow(1.03, Number(target.value));
-      console.log(target.value);
-      console.log("volume:" + this.volume);
     }
   };
 

@@ -39,14 +39,19 @@ export class Subject<T> implements IObservable<T>, IObserver<T> {
 }
 
 export class ObservableProperty<T> implements IObservable<T> {
+  private _oldValue!: T;
   private _value!: T;
   private _subject = new Subject<T>();
   set value(value: T) {
+    this._oldValue = this._value;
     this._value = value;
     this._subject.onNext(value);
   }
   get value() {
     return this._value;
+  }
+  get oldValue() {
+    return this._oldValue;
   }
   constructor(value?: T) {
     if (value != undefined) {
