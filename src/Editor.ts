@@ -122,6 +122,9 @@ export default class Editor {
   private _gameOverSubject = new Subject<void>();
   gameOverAsObservable: IObservable<void> = this._gameOverSubject;
 
+  private _endNextSubject = new Subject<number>();
+  endNextAsObservable: IObservable<number> = this._endNextSubject;
+
   up() {
     this.cursor.move(new IntVector2(0, -1));
     this._cursorMoveSubject.onNext(this.cursor.position);
@@ -162,6 +165,7 @@ export default class Editor {
     if (this.backs.value.length <= 0) {
       this.backs.value = [];
       this.busy.value = false;
+      this._endNextSubject.onNext(combo);
       return;
     }
     this.addScore(this.backs.value.length * (combo + 10));

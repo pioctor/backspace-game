@@ -13,16 +13,20 @@ export class GameWithGameOver {
   gameOver: GameOver;
   top: HTMLElement | null;
   left: HTMLElement;
+  time: HTMLElement;
   constructor(game: Game) {
     this.game = game;
     this.gameOver = new GameOver(this.game.editor);
     this.gameOver.left.subscribe(_ => this.renderLeft());
     this.top = document.getElementById("top");
     this.left = document.createElement("div");
+    this.time = document.createElement("div");
     this.gameOver.gameOverAsObservable.subscribe(_ => this.onGameOver());
     if (this.top != null) {
       this.top.appendChild(this.left);
+      this.top.appendChild(this.time);
     }
+    this.gameOver.timer.time.subscribe(_ => this.renderTime());
     this.renderLeft();
   }
 
@@ -30,8 +34,19 @@ export class GameWithGameOver {
     this.left.innerHTML = `left:${this.gameOver.left.value}`;
   }
 
+  renderTime() {
+    let fill = "green";
+    let t = this.gameOver.timer.time.value / this.gameOver.timer.limit.value;
+    if (t > 0.7) {
+      fill = "red";
+    }
+    this.time.innerHTML = `<svg width="100" height="20"><rect fill="${fill}" width="${100 -
+      100 * t}" height="20"></svg>`;
+  }
+
   onGameOver() {
     this.top!.removeChild(this.left);
+    this.top!.removeChild(this.time);
     this.game.onGameOver();
   }
 }
@@ -39,7 +54,7 @@ export class GameWithGameOver {
 class GameOver {
   left = new ObservableProperty(12);
   editor: Editor;
-  timer = new Timer(10000);
+  timer = new Timer(30000);
 
   private _gameOverSubject = new Subject<void>();
   gameOverAsObservable: IObservable<void> = this._gameOverSubject;
@@ -55,8 +70,8 @@ class GameOver {
         this.increment();
       }
     });
-    this.left.subscribe(v => {
-      if (v <= 0) {
+    this.editor.endNextAsObservable.subscribe(_ => {
+      if (this.left.value < 0) {
         this._gameOverSubject.onNext();
       }
     });
@@ -72,6 +87,7 @@ class GameOver {
       this.timer.restart();
     });
     this.timer.start();
+    this.gameOverAsObservable.subscribe(_ => this.timer.dispose());
   }
 
   decrement() {
@@ -95,13 +111,13 @@ class Timer implements IDisposable {
     this.limit.value = limit;
     this.interval = setInterval(() => {
       if (!this.stopped.value) {
-        this.time.value += 20;
+        this.time.value += 100;
         if (!this.alerted && this.time.value >= this.limit.value) {
           this.alerted = true;
           this._OnLimitSubject.onNext();
         }
       }
-    }, 20);
+    }, 100);
   }
 
   stop() {
