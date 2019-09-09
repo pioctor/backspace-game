@@ -160,14 +160,15 @@ export default class Game {
 
   updateBacks() {
     let posDirs = this.editor.backs.value;
-    let html = [`<g class="back-line" transform="scale(1,1.5)">`];
+    let html = [`<g class="back-line" transform="scale(1,1)">`];
     posDirs.forEach(posDir =>
       html.push(
         `<path d="m${this.editor.document.getPosition2D(posDir.position).x +
-          0.5},${this.editor.document.getPosition2D(posDir.position).y +
-          0.5}l${posDir.direction.x *
+          0.5},${(this.editor.document.getPosition2D(posDir.position).y + 0.5) *
+          1.5}l${posDir.direction.x *
           (this.editor.characters.length - 1)},${posDir.direction.y *
-          (this.editor.characters.length - 1)}"></path>`
+          (this.editor.characters.length - 1) *
+          1.5}"></path>`
       )
     );
     html.push(`</g>`);
