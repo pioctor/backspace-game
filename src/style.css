@@ -1,6 +1,6 @@
 .cursor {
   stroke: coral;
-  stroke-width: 0.05;
+  stroke-width: 0.1;
   animation: winker 1s linear 0s infinite normal none;
 }
 
