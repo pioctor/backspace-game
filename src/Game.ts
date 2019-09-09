@@ -8,6 +8,9 @@ export default class Game {
   editorSvg: SVGSVGElement;
   editor: Editor;
   volume: number = 0.1;
+  charG: SVGGElement;
+  cursorG: SVGGElement;
+  backsG: SVGGElement;
   constructor(editorSvg: SVGSVGElement, editor: Editor) {
     this.editor = editor;
     this.editorSvg = editorSvg;
@@ -23,6 +26,17 @@ export default class Game {
         .y * 1.5}`
     );
 
+    this.charG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this.charG.setAttribute("class", "character");
+    this.cursorG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this.backsG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this.editorSvg.innerHTML = `<rect class="rect" x="-0.05" width="${this
+      .editor.document.size.x + 0.05}" height="${this.editor.document.size.y *
+      1.5}"></rect>`;
+    this.editorSvg.appendChild(this.charG);
+    this.editorSvg.appendChild(this.cursorG);
+    this.editorSvg.appendChild(this.backsG);
+
     this.editor.document.observableText.subscribe(_ => this.updateChars());
     this.editor.cursor.observablePosition.subscribe(_ => this.updateCursor());
     this.editor.backs.subscribe(backs => this.updateBacks());
@@ -33,7 +47,6 @@ export default class Game {
     );
     this.updateCursor();
     this.updateScore();
-    this.render();
 
     this.initializeSound();
 
@@ -100,10 +113,6 @@ export default class Game {
     }
   };
 
-  chars: string = "";
-  cursor: string = "";
-  backs: string = "";
-
   initializeSound() {
     let audioContext = new AudioContext();
     let playing: OscillatorNode;
@@ -135,23 +144,8 @@ export default class Game {
     });
   }
 
-  render() {
-    let html = [`<g>`];
-    html.push(
-      `<rect class="rect" x="-0.05" width="${this.editor.document.size.x +
-        0.05}" height="${this.editor.document.size.y * 1.5}"></rect>`
-    );
-
-    html.push(this.chars);
-    html.push(this.cursor);
-    html.push(this.backs);
-    html.push(`</g>`);
-    this.editorSvg.innerHTML = html.join("");
-  }
-
   updateChars() {
     let html = [];
-    html.push("<g class=character>");
     let c = new Cursor(this.editor.document);
     c.position = 0;
     while (!c.isOut) {
@@ -164,15 +158,13 @@ export default class Game {
       }
       c.forceSet(c.position + 1);
     }
-    html.push("</g>");
-    this.chars = html.join("");
-    this.render();
+    this.charG.innerHTML = html.join("");
   }
 
   updateCursor() {
-    this.cursor = `<path class="cursor" d="m${this.editor.cursor.position2D.x +
-      0.9},${this.editor.cursor.position2D.y * 1.5}v1.5"></path>`;
-    this.render();
+    this.cursorG.innerHTML = `<path class="cursor" d="m${this.editor.cursor
+      .position2D.x + 0.9},${this.editor.cursor.position2D.y *
+      1.5}v1.5"></path>`;
   }
 
   updateScore() {
@@ -195,7 +187,6 @@ export default class Game {
       )
     );
     html.push(`</g>`);
-    this.backs = html.join("");
-    this.render();
+    this.backsG.innerHTML = html.join("");
   }
 }
