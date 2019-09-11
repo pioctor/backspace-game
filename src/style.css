@@ -63,7 +63,7 @@
 
 .result-rect {
   width: 1000cm;
-  height: 100%;
+  height: 1000cm;
 
   fill: wheat;
   fill-opacity: 0.95;
